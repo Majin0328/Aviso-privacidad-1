@@ -28,6 +28,11 @@ if (!$conn) {
     <input type="date" name="fecha" placeholder="Fecha">
     <input type="password" name="contra" placeholder="Contraseña" required>
 
+    <label>
+        <input type="checkbox" name="aceptar" required>
+        Acepto los términos y condiciones
+    </label>
+
     <input type="submit" name="enviar" value="Enviar">
 
 </form>
@@ -37,43 +42,45 @@ if (!$conn) {
 // Comprobamos si se ha enviado el formulario
 if(isset($_POST['enviar'])) {
 
-    // Validar si los campos están presentes antes de usarlos
-    $tipo_tarjeta = isset($_POST['tipo_tarjeta']) ? $_POST['tipo_tarjeta'] : '';
-    $contra = isset($_POST['contra']) ? $_POST['contra'] : '';
-
-    // Si ambos campos están completos, procesar los datos
-    if (!empty($tipo_tarjeta) && !empty($contra)) {
-
-        // Recopilamos los demás datos del formulario
-        $nombre = $_POST['nombre'];
-        $apellido_p = $_POST['apellido_p'];
-        $apellido_m = $_POST['apellido_m'];
-        $genero = $_POST['genero'];
-        $telefono = $_POST['telefono'];
-        $estado_civil = $_POST['estado_civil'];
-        $nacionalidad = $_POST['nacionalidad'];
-        $edad = $_POST['edad'];
-        $ocupacion = $_POST['ocupacion'];
-        $escolaridad = $_POST['escolaridad'];
-        $correo = $_POST['correo'];
-        $fecha = $_POST['fecha'];
-        
-        // Aquí puedes agregar un hash para la contraseña si deseas
-        // $contra = password_hash($_POST['contra'], PASSWORD_DEFAULT);
-
-        // Consulta para insertar los datos en la tabla "usuarios"
-        $insertar = "INSERT INTO usuarios (nombre, apellido_p, apellido_m, genero, telefono, estado_civil, nacionalidad, edad, ocupacion, escolaridad, tipo_tarjeta, correo, fecha, contra) 
-                     VALUES ('$nombre', '$apellido_p', '$apellido_m', '$genero', '$telefono', '$estado_civil', '$nacionalidad', '$edad', '$ocupacion', '$escolaridad', '$tipo_tarjeta', '$correo', '$fecha', '$contra')";
-
-        // Ejecutar la consulta
-        if (mysqli_query($conn, $insertar)) {
-            echo "Datos insertados correctamente.";
-        } else {
-            echo "Error al insertar los datos: " . mysqli_error($conn);
-        }
-
+    // Validar si el checkbox está marcado
+    if (!isset($_POST['aceptar'])) {
+        echo "Debes aceptar los términos y condiciones.";
     } else {
-        echo "Faltan datos en los campos de tipo_tarjeta o contra.";
+        // Validar si los campos están presentes antes de usarlos
+        $tipo_tarjeta = isset($_POST['tipo_tarjeta']) ? $_POST['tipo_tarjeta'] : '';
+        $contra = isset($_POST['contra']) ? $_POST['contra'] : '';
+
+        // Si ambos campos están completos, procesar los datos
+        if (!empty($tipo_tarjeta) && !empty($contra)) {
+
+            // Recopilamos los demás datos del formulario
+            $nombre = $_POST['nombre'];
+            $apellido_p = $_POST['apellido_p'];
+            $apellido_m = $_POST['apellido_m'];
+            $genero = $_POST['genero'];
+            $telefono = $_POST['telefono'];
+            $estado_civil = $_POST['estado_civil'];
+            $nacionalidad = $_POST['nacionalidad'];
+            $edad = $_POST['edad'];
+            $ocupacion = $_POST['ocupacion'];
+            $escolaridad = $_POST['escolaridad'];
+            $correo = $_POST['correo'];
+            $fecha = $_POST['fecha'];
+
+            // Consulta para insertar los datos en la tabla "usuarios"
+            $insertar = "INSERT INTO usuarios (nombre, apellido_p, apellido_m, genero, telefono, estado_civil, nacionalidad, edad, ocupacion, escolaridad, tipo_tarjeta, correo, fecha, contra) 
+                         VALUES ('$nombre', '$apellido_p', '$apellido_m', '$genero', '$telefono', '$estado_civil', '$nacionalidad', '$edad', '$ocupacion', '$escolaridad', '$tipo_tarjeta', '$correo', '$fecha', '$contra')";
+
+            // Ejecutar la consulta
+            if (mysqli_query($conn, $insertar)) {
+                echo "Datos insertados correctamente.";
+            } else {
+                echo "Error al insertar los datos: " . mysqli_error($conn);
+            }
+
+        } else {
+            echo "Faltan datos en los campos de tipo_tarjeta o contra.";
+        }
     }
 
     // Cerrar la conexión
